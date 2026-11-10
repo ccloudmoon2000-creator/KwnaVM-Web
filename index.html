@@ -8,14 +8,63 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
 <style>
-:root{--bg:#101418;--panel:#1a2027;--line:#2b343e;--fg:#e6edf3;--mut:#8b98a5;--ac:#6ee7b7;--bad:#ff7b7b}
+:root{--bg:#101418;--panel:#1a2027;--line:#2b343e;--fg:#e6edf3;--mut:#8b98a5;--ac:#6ee7b7;--bad:#ff7b7b;
+  --case1:#d9d2c3;--case2:#b9b2a2;--case3:#8f897c;--case-dark:#5b564c}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 system-ui,sans-serif;padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}
 main{max-width:760px;margin:0 auto;padding:12px 0 40px}
 h1{font-size:1.25rem;margin:4px 0 12px}
-#screen{background:#000;border:1px solid var(--line);border-radius:8px;overflow:auto;min-height:180px;display:flex;justify-content:center}
-#screen canvas{max-width:100%;height:auto!important;image-rendering:pixelated}
-#screen div{white-space:pre;font:14px monospace;color:#cfe}
+
+/* ---------- Computador retro em pseudo-3D (apenas CSS) ---------- */
+.computer-wrap{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:16px;
+  padding:22px 10px 0;background:radial-gradient(ellipse at 50% 100%,rgba(0,0,0,.45),transparent 70%)}
+
+.monitor{flex:1 1 460px;max-width:620px;position:relative;perspective:900px}
+.monitor .shell{background:linear-gradient(165deg,var(--case1) 0%,var(--case2) 55%,var(--case3) 100%);
+  border-radius:16px 16px 34px 34px;padding:16px 16px 30px;
+  box-shadow:0 24px 46px -14px rgba(0,0,0,.65),0 2px 0 rgba(255,255,255,.35) inset,0 -6px 10px rgba(0,0,0,.18) inset;
+  transform:rotateX(2.5deg);transform-origin:bottom center;position:relative}
+.monitor .shell::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(100deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,0) 18%);opacity:.6}
+.monitor .vents{position:absolute;top:6px;right:18px;display:flex;gap:3px}
+.monitor .vents i{width:3px;height:10px;background:var(--case-dark);opacity:.5;border-radius:1px}
+#screen{background:#000;border-radius:6px;overflow:hidden;min-height:180px;display:flex;justify-content:center;
+  position:relative;box-shadow:inset 0 0 0 2px #000,inset 0 0 26px rgba(0,0,0,.85);transform:rotateX(1deg)}
+#screen::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.07) 0px,rgba(255,255,255,.07) 1px,transparent 1px,transparent 3px);}
+#screen::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:6px;
+  box-shadow:inset 0 0 50px 6px rgba(0,0,0,.9);z-index:2}
+#screen canvas{max-width:100%;height:auto!important;image-rendering:pixelated;position:relative}
+#screen div{white-space:pre;font:14px monospace;color:#cfe;position:relative}
+.monitor .badge{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;
+  font:700 .68rem/1 system-ui;letter-spacing:.14em;color:#6a6458;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.monitor .led{width:7px;height:7px;border-radius:50%;background:#5b3a2e;box-shadow:inset 0 0 1px #000;transition:background .2s,box-shadow .2s}
+.monitor .led.on{background:#58e06a;box-shadow:0 0 6px 2px rgba(88,224,106,.8),inset 0 0 1px #0a3}
+.monitor .stand-neck{width:70px;height:20px;margin:0 auto;background:linear-gradient(180deg,var(--case2),var(--case3));
+  clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.monitor .stand-base{width:200px;height:14px;margin:0 auto;border-radius:50%;
+  background:linear-gradient(180deg,var(--case2),var(--case-dark));box-shadow:0 10px 14px -6px rgba(0,0,0,.6)}
+
+.tower{flex:0 0 100px;width:100px;height:230px;border-radius:8px;position:relative;
+  background:linear-gradient(100deg,var(--case1) 0%,var(--case2) 50%,var(--case3) 100%);
+  box-shadow:0 18px 30px -12px rgba(0,0,0,.6),0 2px 0 rgba(255,255,255,.3) inset}
+.tower .slot{position:absolute;left:10px;right:10px;height:16px;border-radius:2px;
+  background:linear-gradient(180deg,#2c2c2c,#111);box-shadow:inset 0 0 0 1px #000}
+.tower .slot.fd{top:18px}
+.tower .slot.fd::after{content:"";position:absolute;right:6px;top:50%;transform:translateY(-50%);width:5px;height:5px;background:#333;border-radius:50%}
+.tower .slot.cd{top:42px;height:12px}
+.tower .slot.cd::after{content:"";position:absolute;left:8px;right:8px;top:50%;height:1px;background:#444;transform:translateY(-50%)}
+.tower .vents2{position:absolute;left:10px;right:10px;top:70px;bottom:46px;display:flex;flex-direction:column;gap:4px}
+.tower .vents2 i{height:3px;background:var(--case-dark);opacity:.35;border-radius:1px}
+.tower .pwr{position:absolute;left:12px;bottom:16px;width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--case2) 55%,var(--case-dark));box-shadow:0 1px 2px rgba(0,0,0,.5)}
+.tower .pwrled{position:absolute;left:34px;bottom:21px;width:5px;height:5px;border-radius:50%;background:#5b3a2e;transition:background .2s,box-shadow .2s}
+.tower .pwrled.on{background:#58e06a;box-shadow:0 0 5px 2px rgba(88,224,106,.8)}
+@media (max-width:560px){ .tower{display:none} }
+
+#msg{min-height:1.4em;color:var(--mut);font-size:.9rem;margin-top:8px}
+#msg.err{color:var(--bad)}
+.hint{color:var(--mut);font-size:.85rem;margin:6px 0 0}
 section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:12px}
 h2{font-size:1rem;margin:0 0 8px}
 label{display:block;margin:10px 0 4px;color:var(--mut);font-size:.9rem}
@@ -27,16 +76,47 @@ button.go{background:var(--ac);color:#06241a;border-color:var(--ac);font-weight:
 button:disabled{opacity:.4}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 output{color:var(--ac);font-weight:600}
-#msg{min-height:1.4em;color:var(--mut);font-size:.9rem;margin-top:8px}
-#msg.err{color:var(--bad)}
+
+/* ---------- Teclado mecânico virtual ---------- */
+#mechkb{user-select:none;-webkit-user-select:none;overflow-x:auto;padding-bottom:4px}
+#mechkb .krow{display:flex;gap:4px;margin-top:4px}
+#mechkb .key{position:relative;flex:1 1 0;min-width:28px;height:40px;border:0;border-radius:5px;cursor:pointer;
+  font:600 .72rem/1 system-ui;color:#dfe6ec;background:linear-gradient(180deg,#39424c,#262d35);
+  box-shadow:0 3px 0 #11151a,0 5px 6px rgba(0,0,0,.4);transition:transform .04s,box-shadow .04s;
+  display:flex;align-items:center;justify-content:center;padding:0 2px}
+#mechkb .key:active,#mechkb .key.active{transform:translateY(3px);box-shadow:0 0 0 #11151a,0 1px 2px rgba(0,0,0,.4)}
+#mechkb .key.mod{background:linear-gradient(180deg,#2e3844,#20262e);color:var(--ac)}
+#mechkb .key.mod.active{background:linear-gradient(180deg,var(--ac),#3fb98c);color:#06241a}
+#mechkb .key.wide{min-width:52px}
+.kb-controls{display:flex;align-items:center;gap:10px;margin:6px 0 4px;color:var(--mut);font-size:.85rem}
+.kb-controls label{display:flex;align-items:center;gap:6px;margin:0}
+
 #keys button{flex:0 0 auto;min-width:52px;min-height:40px;padding:4px 10px}
-.hint{color:var(--mut);font-size:.85rem;margin:6px 0 0}
 </style>
 </head>
 <body>
 <main>
 <h1>KwnaVM Web</h1>
-<div id="screen"><div></div><canvas></canvas></div>
+
+<div class="computer-wrap">
+  <div class="monitor">
+    <div class="shell">
+      <div class="vents"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div id="screen"><div></div><canvas></canvas></div>
+      <div class="badge"><span class="led" id="pwrLed1"></span> KWNA&nbsp;386&nbsp;VGA</div>
+    </div>
+    <div class="stand-neck"></div>
+    <div class="stand-base"></div>
+  </div>
+  <div class="tower" aria-hidden="true">
+    <div class="slot fd"></div>
+    <div class="slot cd"></div>
+    <div class="vents2"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pwr"></div>
+    <div class="pwrled" id="pwrLed2"></div>
+  </div>
+</div>
+
 <div id="msg" role="status"></div>
 
 <section id="setup">
@@ -46,13 +126,14 @@ output{color:var(--ac);font-weight:600}
   <p class="hint">O arquivo fica no seu aparelho e não é enviado para lugar nenhum. Só funcionam sistemas de 32 bits (x86).</p>
 
   <label for="ram">Memória RAM: <output id="ramv">256 MB</output></label>
-  <input type="range" id="ram" min="16" max="1024" step="16" value="256">
+  <input type="range" id="ram" min="16" max="4096" step="16" value="256">
 
   <label for="vram">Memória de vídeo</label>
   <select id="vram"><option value="2">2 MB</option><option value="8" selected>8 MB</option><option value="16">16 MB</option><option value="32">32 MB</option></select>
 
   <label for="disk">Disco rígido virtual: <output id="diskv">512 MB</output> (0 = sem disco)</label>
-  <input type="range" id="disk" min="0" max="2048" step="64" value="512">
+  <input type="range" id="disk" min="0" max="10240" step="256" value="512">
+  <p class="hint">Discos grandes (vários GB) dependem da memória livre do seu aparelho para serem criados; se falhar, reduza o valor.</p>
 
   <label for="hd">Ou carregar um disco salvo antes (opcional)</label>
   <input type="file" id="hd" accept=".img,.bin,.raw,.hd">
@@ -77,6 +158,12 @@ output{color:var(--ac);font-weight:600}
   <div class="row"><button id="send">Enviar</button><button id="sendEnter">Enviar + Enter</button></div>
   <label>Teclas especiais</label>
   <div class="row" id="keys"></div>
+
+  <label>Teclado mecânico</label>
+  <div class="kb-controls">
+    <label><input type="checkbox" id="kbSound" checked> Som dos cliques</label>
+  </div>
+  <div id="mechkb"></div>
 </section>
 </main>
 
@@ -100,6 +187,11 @@ async function ensureLib(){
   msg("Carregando o motor de emulação…");
   try { await loadScript("lib/libv86.js"); }
   catch(e){ await loadScript(CDN+"libv86.js"); }
+}
+
+function setPowerLed(on){
+  $("pwrLed1").classList.toggle("on", on);
+  $("pwrLed2").classList.toggle("on", on);
 }
 
 async function start(){
@@ -137,9 +229,9 @@ async function start(){
     if (emu) { try{ await emu.destroy(); }catch(e){} }
     msg("Iniciando…");
     emu = new V86(o);
-    emu.add_listener("emulator-started", () => msg("Em execução. Toque na tela para dar foco."));
+    emu.add_listener("emulator-started", () => { msg("Em execução. Toque na tela para dar foco."); setPowerLed(true); });
     $("stop").disabled = false; $("ctl").hidden = false;
-    $("screen").scrollIntoView({behavior:"smooth"});
+    document.querySelector(".computer-wrap").scrollIntoView({behavior:"smooth"});
   } catch(e){
     console.error(e);
     msg("Não foi possível iniciar. Verifique a conexão ou reduza a RAM.", true);
@@ -148,7 +240,7 @@ async function start(){
 
 async function stop(){
   if (emu) { try{ await emu.destroy(); }catch(e){} emu = null; }
-  $("stop").disabled = true; $("ctl").hidden = true; msg("Parado.");
+  $("stop").disabled = true; $("ctl").hidden = true; msg("Parado."); setPowerLed(false);
 }
 
 function down(name,blob){ const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),5000); }
@@ -175,6 +267,76 @@ const cad=document.createElement("button"); cad.textContent="Ctrl+Alt+Del";
 cad.onclick=()=>emu&&emu.keyboard_send_scancodes([0x1d,0x38,0xe0,0x53,0xe0,0xd3,0xb8,0x9d]); kb.appendChild(cad);
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+/* =======================================================================
+   Teclado mecânico virtual: layout completo, som de clique sintetizado
+   (Web Audio, sem arquivos externos) e envio real de scancodes ao v86.
+   ======================================================================= */
+let actx = null;
+function audioCtx(){ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); return actx; }
+
+function clickSound(down){
+  if (!$("kbSound").checked) return;
+  try{
+    const ctx = audioCtx();
+    const dur = 0.03;
+    const buf = ctx.createBuffer(1, ctx.sampleRate*dur, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/d.length, 2.2);
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const filt = ctx.createBiquadFilter(); filt.type = "bandpass";
+    filt.frequency.value = down ? 2600 : 1500; filt.Q.value = 1.1;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(down ? 0.5 : 0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
+    src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+    src.start();
+  }catch(e){ /* áudio indisponível, segue sem som */ }
+}
+
+// linhas do teclado: [rótulo, scancode, largura(un.), prefixo estendido?, é modificador?]
+const ROWS = [
+  [["Esc",0x01],["F1",0x3b],["F2",0x3c],["F3",0x3d],["F4",0x3e],["F5",0x3f],["F6",0x40],["F7",0x41],["F8",0x42],["F9",0x43],["F10",0x44],["F11",0x57],["F12",0x58]],
+  [["`",0x29],["1",0x02],["2",0x03],["3",0x04],["4",0x05],["5",0x06],["6",0x07],["7",0x08],["8",0x09],["9",0x0a],["0",0x0b],["-",0x0c],["=",0x0d],["⌫",0x0e,1.7]],
+  [["Tab",0x0f,1.4],["Q",0x10],["W",0x11],["E",0x12],["R",0x13],["T",0x14],["Y",0x15],["U",0x16],["I",0x17],["O",0x18],["P",0x19],["[",0x1a],["]",0x1b],["\\",0x2b]],
+  [["Caps",0x3a,1.6],["A",0x1e],["S",0x1f],["D",0x20],["F",0x21],["G",0x22],["H",0x23],["J",0x24],["K",0x25],["L",0x26],[";",0x27],["'",0x28],["Enter",0x1c,1.9]],
+  [["Shift",0x2a,2,0,1],["Z",0x2c],["X",0x2d],["C",0x2e],["V",0x2f],["B",0x30],["N",0x31],["M",0x32],[",",0x33],[".",0x34],["/",0x35],["Shift",0x36,2,0,1]],
+  [["Ctrl",0x1d,1.4,0,1],["Alt",0x38,1.2,0,1],["Espaço",0x39,6],["Alt",0x38,1.2,0xe0,1],["Ctrl",0x1d,1.4,0xe0,1],["←",0x4b,1,0xe0],["↑",0x48,1,0xe0],["↓",0x50,1,0xe0],["→",0x4d,1,0xe0]]
+];
+const held = new Map(); // scancode(+prefixo) -> botão (modificadores presos até o próximo toque)
+
+function sendTap(code, ext){ if(!emu) return; const pre = ext?[0xe0]:[]; emu.keyboard_send_scancodes([...pre, code, ...pre, code|0x80]); }
+function sendMake(code, ext){ if(!emu) return; emu.keyboard_send_scancodes(ext?[0xe0,code]:[code]); }
+function sendBreak(code, ext){ if(!emu) return; emu.keyboard_send_scancodes(ext?[0xe0,code|0x80]:[code|0x80]); }
+
+const mechkb = $("mechkb");
+ROWS.forEach(row => {
+  const r = document.createElement("div"); r.className = "krow";
+  row.forEach(([label, code, width, ext, isMod]) => {
+    const b = document.createElement("button"); b.type = "button";
+    b.className = "key" + (isMod ? " mod" : "") + (width && width>1 ? " wide" : "");
+    b.style.flexGrow = width || 1;
+    b.textContent = label;
+    const key = (ext?"e":"")+code;
+    b.onpointerdown = (e) => {
+      e.preventDefault();
+      clickSound(true);
+      if (isMod) {
+        if (held.has(key)) { sendBreak(code, ext); held.delete(key); b.classList.remove("active"); }
+        else { sendMake(code, ext); held.set(key, b); b.classList.add("active"); }
+      } else {
+        b.classList.add("active");
+        sendTap(code, ext);
+      }
+    };
+    b.onpointerup = b.onpointerleave = () => {
+      if (!isMod) b.classList.remove("active");
+      clickSound(false);
+    };
+    r.appendChild(b);
+  });
+  mechkb.appendChild(r);
+});
 </script>
 </body>
 </html>
