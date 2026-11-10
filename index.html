@@ -28,14 +28,58 @@ h1{font-size:1.25rem;margin:4px 0 12px}
   background:linear-gradient(100deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,0) 18%);opacity:.6}
 .monitor .vents{position:absolute;top:6px;right:18px;display:flex;gap:3px}
 .monitor .vents i{width:3px;height:10px;background:var(--case-dark);opacity:.5;border-radius:1px}
-#screen{background:#000;border-radius:6px;overflow:hidden;min-height:180px;display:flex;justify-content:center;
-  position:relative;box-shadow:inset 0 0 0 2px #000,inset 0 0 26px rgba(0,0,0,.85);transform:rotateX(1deg)}
+#screen{background:#000;border-radius:6px;overflow:auto;min-height:180px;max-height:70vh;
+  display:flex;justify-content:center;align-items:flex-start;position:relative;
+  box-shadow:inset 0 0 0 2px #000,inset 0 0 26px rgba(0,0,0,.85);transform:rotateX(1deg);
+  scrollbar-width:thin;scrollbar-color:#625d52 #171717}
 #screen::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;
   background:repeating-linear-gradient(180deg,rgba(255,255,255,.07) 0px,rgba(255,255,255,.07) 1px,transparent 1px,transparent 3px);}
 #screen::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:6px;
   box-shadow:inset 0 0 50px 6px rgba(0,0,0,.9);z-index:2}
-#screen canvas{max-width:100%;height:auto!important;image-rendering:pixelated;position:relative}
-#screen div{white-space:pre;font:14px monospace;color:#cfe;position:relative}
+#screen canvas{display:block;max-width:100%;height:auto!important;max-height:100%;object-fit:contain;
+  image-rendering:pixelated;position:relative;flex:0 0 auto}
+#screen div{white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;font:14px/1.25 monospace;
+  color:#cfe;position:relative;flex:0 1 auto;min-width:0}
+.computer-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:16px;width:100%}
+.physical-keyboard{width:min(100%,620px);margin:0 auto;padding:12px 12px 15px;
+  border-radius:12px 12px 18px 18px;background:linear-gradient(160deg,var(--case1),var(--case2) 65%,var(--case3));
+  border:1px solid rgba(70,62,49,.55);box-shadow:0 13px 24px -12px rgba(0,0,0,.7),
+  0 2px 0 rgba(255,255,255,.35) inset,0 -4px 8px rgba(0,0,0,.16) inset}
+.keyboard-brand{text-align:right;margin:0 5px 7px;color:#625c50;font:700 .58rem/1 system-ui;letter-spacing:.16em}
+#mechkb{user-select:none;-webkit-user-select:none;overflow-x:auto;padding:2px 2px 7px}
+#mechkb .krow{display:flex;gap:4px;margin-top:5px;min-width:0}
+#mechkb .key{position:relative;flex:1 1 0;min-width:0;height:clamp(30px,4.4vw,42px);
+  border:1px solid #928a79;border-radius:5px;cursor:pointer;font:600 clamp(.55rem,1.1vw,.72rem)/1 system-ui;
+  color:#403b32;background:linear-gradient(180deg,#f0eadc,#c9c0ae);
+  box-shadow:0 3px 0 #898170,0 5px 6px rgba(0,0,0,.28);transition:transform .04s,box-shadow .04s;
+  display:flex;align-items:center;justify-content:center;padding:0 2px}
+#mechkb .key:active,#mechkb .key.active{transform:translateY(3px);box-shadow:0 0 0 #898170,0 1px 2px rgba(0,0,0,.3)}
+#mechkb .key.mod{background:linear-gradient(180deg,#aaa18f,#817967);color:#fff}
+#mechkb .key.mod.active{background:linear-gradient(180deg,#6ee7b7,#3fb98c);color:#06241a}
+#mechkb .key.wide{min-width:0}
+#mechkb .key:focus-visible{outline:2px solid #fff;outline-offset:1px}
+@media (max-width:560px){
+  .tower{display:none}
+  .physical-keyboard{padding:9px 6px 12px}
+  #mechkb .krow{gap:2px}
+  #mechkb .key{height:32px;border-radius:4px}
+}
+#computer:fullscreen,#computer:-webkit-full-screen{width:100%;height:100%;max-width:none;margin:0;padding:
+  max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
+  overflow:auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;
+  background:radial-gradient(ellipse at 50% 40%,#343b40,#101418 75%)}
+#computer:fullscreen .computer-row,#computer:-webkit-full-screen .computer-row{flex:0 0 auto}
+#computer:fullscreen .monitor,#computer:-webkit-full-screen .monitor{flex:0 1 min(78vw,850px);max-width:850px;width:100%}
+#computer:fullscreen .monitor .shell,#computer:-webkit-full-screen .monitor .shell{padding:clamp(8px,1.5vw,16px) clamp(8px,1.5vw,16px) 22px}
+#computer:fullscreen #screen,#computer:-webkit-full-screen #screen{height:min(58vh,650px);max-height:58vh;min-height:160px}
+#computer:fullscreen .physical-keyboard,#computer:-webkit-full-screen .physical-keyboard{flex:0 0 auto;width:min(94vw,850px)}
+#computer:fullscreen .tower,#computer:-webkit-full-screen .tower{display:block}
+@media(max-width:560px){
+  #computer:fullscreen .tower,#computer:-webkit-full-screen .tower{display:none}
+  #computer:fullscreen .monitor,#computer:-webkit-full-screen .monitor{flex-basis:auto}
+  #computer:fullscreen #screen,#computer:-webkit-full-screen #screen{height:48vh;max-height:48vh}
+  #computer:fullscreen .physical-keyboard,#computer:-webkit-full-screen .physical-keyboard{width:100%}
+}
 .monitor .badge{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;
   font:700 .68rem/1 system-ui;letter-spacing:.14em;color:#6a6458;text-shadow:0 1px 0 rgba(255,255,255,.4)}
 .monitor .led{width:7px;height:7px;border-radius:50%;background:#5b3a2e;box-shadow:inset 0 0 1px #000;transition:background .2s,box-shadow .2s}
@@ -77,20 +121,9 @@ button:disabled{opacity:.4}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 output{color:var(--ac);font-weight:600}
 
-/* ---------- Teclado mecânico virtual ---------- */
-#mechkb{user-select:none;-webkit-user-select:none;overflow-x:auto;padding-bottom:4px}
-#mechkb .krow{display:flex;gap:4px;margin-top:4px}
-#mechkb .key{position:relative;flex:1 1 0;min-width:28px;height:40px;border:0;border-radius:5px;cursor:pointer;
-  font:600 .72rem/1 system-ui;color:#dfe6ec;background:linear-gradient(180deg,#39424c,#262d35);
-  box-shadow:0 3px 0 #11151a,0 5px 6px rgba(0,0,0,.4);transition:transform .04s,box-shadow .04s;
-  display:flex;align-items:center;justify-content:center;padding:0 2px}
-#mechkb .key:active,#mechkb .key.active{transform:translateY(3px);box-shadow:0 0 0 #11151a,0 1px 2px rgba(0,0,0,.4)}
-#mechkb .key.mod{background:linear-gradient(180deg,#2e3844,#20262e);color:var(--ac)}
-#mechkb .key.mod.active{background:linear-gradient(180deg,var(--ac),#3fb98c);color:#06241a}
-#mechkb .key.wide{min-width:52px}
+/* ---------- Teclado físico integrado ---------- */
 .kb-controls{display:flex;align-items:center;gap:10px;margin:6px 0 4px;color:var(--mut);font-size:.85rem}
 .kb-controls label{display:flex;align-items:center;gap:6px;margin:0}
-
 #keys button{flex:0 0 auto;min-width:52px;min-height:40px;padding:4px 10px}
 </style>
 </head>
@@ -98,7 +131,8 @@ output{color:var(--ac);font-weight:600}
 <main>
 <h1>KwnaVM Web</h1>
 
-<div class="computer-wrap">
+<div class="computer-wrap" id="computer">
+  <div class="computer-row">
   <div class="monitor">
     <div class="shell">
       <div class="vents"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -114,6 +148,11 @@ output{color:var(--ac);font-weight:600}
     <div class="vents2"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="pwr"></div>
     <div class="pwrled" id="pwrLed2"></div>
+  </div>
+  </div>
+  <div class="physical-keyboard" id="physicalKeyboard" aria-label="Teclado virtual">
+    <div class="keyboard-brand">KWNA • 386</div>
+    <div id="mechkb"></div>
   </div>
 </div>
 
@@ -159,11 +198,9 @@ output{color:var(--ac);font-weight:600}
   <label>Teclas especiais</label>
   <div class="row" id="keys"></div>
 
-  <label>Teclado mecânico</label>
   <div class="kb-controls">
-    <label><input type="checkbox" id="kbSound" checked> Som dos cliques</label>
+    <label><input type="checkbox" id="kbSound" checked> Som dos cliques do teclado</label>
   </div>
-  <div id="mechkb"></div>
 </section>
 </main>
 
@@ -248,7 +285,21 @@ function down(name,blob){ const a=document.createElement("a"); a.href=URL.create
 $("start").onclick = start;
 $("stop").onclick = stop;
 $("reset").onclick = () => emu && emu.restart();
-$("full").onclick = () => { const s=$("screen"); (s.requestFullscreen||s.webkitRequestFullscreen).call(s); };
+$("full").onclick = async () => {
+  const target = $("computer");
+  try {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      if (document.exitFullscreen) await document.exitFullscreen();
+      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    } else if (target.requestFullscreen) {
+      await target.requestFullscreen();
+    } else if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen();
+    } else {
+      msg("Este navegador não suporta tela cheia nativa.", true);
+    }
+  } catch (e) { msg("Não foi possível ativar a tela cheia neste navegador.", true); }
+};
 $("saveState").onclick = async () => { if(!emu) return; savedState = await emu.save_state(); msg("Estado salvo na memória (some ao fechar a página)."); };
 $("loadState").onclick = async () => { if(emu && savedState){ await emu.restore_state(savedState); msg("Estado restaurado."); } else msg("Nenhum estado salvo ainda.", true); };
 $("saveDisk").onclick = () => diskBuf ? down("disco.img", new Blob([diskBuf])) : msg("Este disco não pode ser baixado.", true);
@@ -256,6 +307,12 @@ $("saveDisk").onclick = () => diskBuf ? down("disco.img", new Blob([diskBuf])) :
 const send = (enter) => { if(!emu) return; const t=$("txt").value + (enter?"\n":""); if(emu.keyboard_send_text) emu.keyboard_send_text(t); $("txt").value=""; };
 $("send").onclick = () => send(false);
 $("sendEnter").onclick = () => send(true);
+document.addEventListener("fullscreenchange", () => {
+  $("full").textContent = document.fullscreenElement ? "Sair da tela cheia" : "Tela cheia";
+});
+document.addEventListener("webkitfullscreenchange", () => {
+  $("full").textContent = document.webkitFullscreenElement ? "Sair da tela cheia" : "Tela cheia";
+});
 
 // Teclas especiais (scancodes set 1; prefixo 0xE0 = tecla estendida)
 const K = {Esc:[0x01],Tab:[0x0f],Enter:[0x1c],Espaço:[0x39],Apagar:[0x0e],"↑":[0xe0,0x48],"↓":[0xe0,0x50],"←":[0xe0,0x4b],"→":[0xe0,0x4d],Del:[0xe0,0x53],F2:[0x3c],F10:[0x44],F12:[0x58]};
